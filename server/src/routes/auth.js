@@ -1,0 +1,31 @@
+import { Router } from 'express';
+import { z } from 'zod';
+import { validate } from '../middleware/validate.js';
+import { requireAuth } from '../middleware/auth.js';
+import { authLimiter } from '../middleware/rateLimiter.js';
+import * as ctrl from '../controllers/authController.js';
+
+const router = Router();
+
+const registerSchema = z.object({
+  body: z.object({
+    username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/, 'Letters, numbers, underscore only'),
+    email: z.string().email(),
+    password: z.string().min(8).max(128),
+  }),
+});
+
+const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    password: z.string().min(1),
+  }),
+});
+
+router.post('/register', authLimiter, validate(registerSchema), ctrl.register);
+router.post('/login', authLimiter, validate(loginSchema), ctrl.login);
+router.post('/refresh', ctrl.refresh);
+router.post('/logout', ctrl.logout);
+router.get('/me', requireAuth, ctrl.me);
+
+export default router;

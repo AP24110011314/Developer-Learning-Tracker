@@ -1,0 +1,11 @@
+{
+  "name": "developer-learning-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Developer Learning Tracker - MERN monorepo",
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "test:server": "npm --prefix server test"
+  }
+}

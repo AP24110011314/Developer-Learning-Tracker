@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import Problems from './pages/Problems.jsx';
 import Goals from './pages/Goals.jsx';
 import Projects from './pages/Projects.jsx';
+import Settings from './pages/Settings.jsx';
 
 export default function App() {
   return (
@@ -44,6 +45,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Projects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             }
           />

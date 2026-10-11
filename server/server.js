@@ -5,6 +5,7 @@ dotenv.config();
 import { validateEnv, env } from './src/config/env.js';
 import { connectDB } from './src/config/db.js';
 import { createApp } from './src/app.js';
+import { startDailySync } from './src/jobs/dailySync.js';
 
 try {
   validateEnv();
@@ -26,3 +27,5 @@ try {
 app.listen(Number(env.PORT), () => {
   console.log(`Server listening on port ${env.PORT} (${env.NODE_ENV})`);
 });
+
+startDailySync();

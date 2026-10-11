@@ -10,6 +10,7 @@ import problemRoutes from './routes/problems.js';
 import statsRoutes from './routes/stats.js';
 import goalRoutes from './routes/goals.js';
 import projectRoutes from './routes/projects.js';
+import syncRoutes from './routes/sync.js';
 
 export function createApp() {
   const app = express();
@@ -31,6 +32,7 @@ export function createApp() {
   app.use('/api/stats', statsRoutes);
   app.use('/api/goals', goalRoutes);
   app.use('/api/projects', projectRoutes);
+  app.use('/api/sync', syncRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

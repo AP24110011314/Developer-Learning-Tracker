@@ -77,3 +77,27 @@ export async function me(req, res, next) {
     next(err);
   }
 }
+
+export async function updateMe(req, res, next) {
+  try {
+    const allowed = {};
+    for (const k of ['bio', 'avatar', 'timezone']) {
+      if (req.body[k] !== undefined) allowed[k] = req.body[k];
+    }
+    // Dot notation so updating one handle never wipes the other.
+    for (const k of ['leetcode', 'codeforces']) {
+      if (req.body.handles?.[k] !== undefined) allowed[`handles.${k}`] = req.body.handles[k];
+    }
+    for (const k of ['profilePublic', 'showHeatmap', 'showProjects']) {
+      if (req.body.privacy?.[k] !== undefined) allowed[`privacy.${k}`] = req.body.privacy[k];
+    }
+    const user = await User.findByIdAndUpdate(req.user.id, { $set: allowed }, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) return res.status(401).json({ message: 'User not found' });
+    res.json({ user: toPublicUser(user) });
+  } catch (err) {
+    next(err);
+  }
+}

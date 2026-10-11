@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Zap, Code2, Flame, Trophy, ExternalLink, GitBranch, Globe } from 'lucide-react';
 import api from '../api.js';
 import Heatmap from '../components/Heatmap.jsx';
+import { TopicTag } from '../components/ui/Badge.jsx';
+import { Skeleton } from '../components/ui/Skeleton.jsx';
 
 export default function PublicProfile() {
   const { username } = useParams();
@@ -10,97 +14,162 @@ export default function PublicProfile() {
 
   useEffect(() => {
     setStatus('loading');
-    // Public endpoint — works with or without a login token.
     api
       .get(`/public/${username}`)
-      .then(({ data }) => {
-        setProfile(data);
-        setStatus('ok');
-      })
+      .then(({ data }) => { setProfile(data); setStatus('ok'); })
       .catch((err) => {
         setStatus(err.response?.status === 404 ? 'notfound' : 'error');
       });
   }, [username]);
 
-  if (status === 'loading') return <div className="p-8">Loading…</div>;
-  if (status === 'notfound')
+  if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded shadow text-center space-y-3">
-          <h1 className="text-xl font-bold">Profile not found</h1>
-          <p className="text-sm text-gray-500">This profile is private or doesn’t exist.</p>
-          <Link to="/" className="underline text-sm">Go home</Link>
+      <div className="min-h-screen bg-[var(--bg-page)] p-6 max-w-3xl mx-auto space-y-4">
+        <Skeleton className="h-48 w-full" />
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-48 w-full" />
+      </div>
+    );
+  }
+
+  if (status === 'notfound') {
+    return (
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-6">
+        <div className="card p-10 text-center space-y-4 max-w-sm">
+          <div className="text-6xl">👤</div>
+          <h1 className="text-xl font-bold text-[var(--text-primary)]">Profile not found</h1>
+          <p className="text-sm text-[var(--text-secondary)]">This profile is private or doesn't exist.</p>
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-primary-500 font-semibold hover:underline">
+            Go home
+          </Link>
         </div>
       </div>
     );
-  if (status === 'error') return <div className="p-8">Something went wrong. Try again later.</div>;
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-6">
+        <p className="text-[var(--text-secondary)]">Something went wrong. Try again later.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="font-bold">DLT</Link>
-        <Link to="/login" className="text-sm underline">Log in</Link>
-      </header>
-      <div className="max-w-3xl mx-auto p-4 space-y-4">
-        <div className="bg-white p-6 rounded shadow">
-          <h1 className="text-2xl font-bold">@{profile.username}</h1>
-          {profile.bio && <p className="text-sm text-gray-600 mt-1">{profile.bio}</p>}
-          <div className="grid grid-cols-3 gap-3 mt-4">
-            {[
-              ['Solved', profile.stats.totalSolved],
-              ['Current streak', `${profile.stats.currentStreak}d`],
-              ['Longest streak', `${profile.stats.longestStreak}d`],
-            ].map(([label, value]) => (
-              <div key={label} className="bg-gray-50 p-3 rounded text-center">
-                <div className="text-xl font-bold">{value}</div>
-                <div className="text-xs text-gray-500">{label}</div>
-              </div>
-            ))}
+    <div className="min-h-screen bg-[var(--bg-page)]">
+      {/* Top nav */}
+      <header className="glass sticky top-0 z-30 px-6 py-3 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center">
+            <Zap size={13} className="text-white" />
           </div>
-        </div>
+          <span className="font-extrabold text-[var(--text-primary)]">DLT</span>
+        </Link>
+        <Link to="/login" className="text-sm font-semibold text-primary-500 hover:text-primary-600 transition-colors">
+          Sign in
+        </Link>
+      </header>
 
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="font-bold mb-2">Top topics</h2>
-          {profile.topTopics?.length ? (
-            <div className="flex flex-wrap gap-2">
-              {profile.topTopics.map((t) => (
-                <span key={t.topic} className="text-sm bg-gray-100 px-3 py-1 rounded">
-                  {t.topic} × {t.count}
-                </span>
+      <div className="max-w-3xl mx-auto p-4 md:p-6 space-y-5">
+        {/* Profile hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card overflow-hidden"
+        >
+          {/* Cover gradient */}
+          <div className="h-24 bg-gradient-to-br from-primary-500 via-violet-500 to-pink-500" />
+          <div className="px-6 pb-6">
+            {/* Avatar */}
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-violet-500 flex items-center justify-center text-white text-2xl font-extrabold -mt-8 border-4 border-[var(--bg-card)]">
+              {profile.username[0].toUpperCase()}
+            </div>
+            <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mt-3">@{profile.username}</h1>
+            {profile.bio && <p className="text-sm text-[var(--text-secondary)] mt-1">{profile.bio}</p>}
+
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-3 mt-5">
+              {[
+                { icon: Code2, label: 'Solved', value: profile.stats.totalSolved },
+                { icon: Flame, label: 'Current streak', value: `${profile.stats.currentStreak}d` },
+                { icon: Trophy, label: 'Longest streak', value: `${profile.stats.longestStreak}d` },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label} className="rounded-xl bg-[var(--bg-input)] p-3 text-center">
+                  <div className="text-xl font-extrabold text-[var(--text-primary)]">{value}</div>
+                  <div className="text-xs text-[var(--text-muted)] mt-0.5">{label}</div>
+                </div>
               ))}
             </div>
-          ) : (
-            <p className="text-sm text-gray-500">No topic data.</p>
-          )}
-        </div>
-
-        {profile.heatmap && (
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="font-bold mb-2">Activity {profile.heatmapYear ? `(${profile.heatmapYear})` : ''}</h2>
-            <Heatmap counts={profile.heatmap} year={profile.heatmapYear} />
           </div>
+        </motion.div>
+
+        {/* Top topics */}
+        {profile.topTopics?.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="card p-5"
+          >
+            <h2 className="font-bold text-[var(--text-primary)] mb-3">Top Topics</h2>
+            <div className="flex flex-wrap gap-2">
+              {profile.topTopics.map((t) => (
+                <div key={t.topic} className="flex items-center gap-1.5">
+                  <TopicTag topic={t.topic} />
+                  <span className="text-xs text-[var(--text-muted)]">×{t.count}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         )}
 
-        {profile.featuredProjects && (
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="font-bold mb-2">Featured projects</h2>
-            {profile.featuredProjects.length === 0 ? (
-              <p className="text-sm text-gray-500">No featured projects.</p>
-            ) : (
-              <div className="space-y-3">
-                {profile.featuredProjects.map((p) => (
-                  <div key={p._id} className="border p-3 rounded">
-                    <div className="font-bold">⭐ {p.name}</div>
-                    {p.description && <p className="text-sm text-gray-600">{p.description}</p>}
-                    <div className="flex gap-3 text-sm mt-1">
-                      {p.repoUrl && <a className="underline" href={p.repoUrl} target="_blank" rel="noreferrer">Repo</a>}
-                      {p.liveUrl && <a className="underline" href={p.liveUrl} target="_blank" rel="noreferrer">Live</a>}
-                    </div>
+        {/* Activity heatmap */}
+        {profile.heatmap && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="card p-5"
+          >
+            <h2 className="font-bold text-[var(--text-primary)] mb-4">
+              Activity {profile.heatmapYear ? `(${profile.heatmapYear})` : ''}
+            </h2>
+            <Heatmap counts={profile.heatmap} year={profile.heatmapYear} />
+          </motion.div>
+        )}
+
+        {/* Featured projects */}
+        {profile.featuredProjects?.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="card p-5"
+          >
+            <h2 className="font-bold text-[var(--text-primary)] mb-4">Featured Projects</h2>
+            <div className="space-y-3">
+              {profile.featuredProjects.map((p) => (
+                <div key={p._id} className="rounded-xl border border-[var(--border)] p-4 space-y-2 hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+                  <div className="font-semibold text-[var(--text-primary)]">⭐ {p.name}</div>
+                  {p.description && <p className="text-sm text-[var(--text-secondary)]">{p.description}</p>}
+                  <div className="flex gap-3">
+                    {p.repoUrl && (
+                      <a href={p.repoUrl} target="_blank" rel="noreferrer"
+                        className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] hover:text-primary-500 transition-colors">
+                        <GitBranch size={13} /> Repo
+                      </a>
+                    )}
+                    {p.liveUrl && (
+                      <a href={p.liveUrl} target="_blank" rel="noreferrer"
+                        className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] hover:text-primary-500 transition-colors">
+                        <Globe size={13} /> Live
+                      </a>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         )}
       </div>
     </div>

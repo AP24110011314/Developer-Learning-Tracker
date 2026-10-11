@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { User } from '../models/User.js';
+import { normalizeHandle } from '../services/handles.js';
 import {
   registerUser,
   validateCredentials,
@@ -85,8 +86,9 @@ export async function updateMe(req, res, next) {
       if (req.body[k] !== undefined) allowed[k] = req.body[k];
     }
     // Dot notation so updating one handle never wipes the other.
+    // Handles are normalized (profile URLs accepted) so sync never chokes.
     for (const k of ['leetcode', 'codeforces']) {
-      if (req.body.handles?.[k] !== undefined) allowed[`handles.${k}`] = req.body.handles[k];
+      if (req.body.handles?.[k] !== undefined) allowed[`handles.${k}`] = normalizeHandle(k, req.body.handles[k]);
     }
     for (const k of ['profilePublic', 'showHeatmap', 'showProjects']) {
       if (req.body.privacy?.[k] !== undefined) allowed[`privacy.${k}`] = req.body.privacy[k];

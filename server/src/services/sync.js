@@ -3,6 +3,7 @@ import { PlatformStats } from '../models/PlatformStats.js';
 import { User } from '../models/User.js';
 import { fetchCodeforces } from './codeforces.js';
 import { fetchLeetcode } from './leetcode.js';
+import { normalizeHandle } from './handles.js';
 
 /** Upsert synced problems so reruns never create duplicates. */
 async function upsertProblems(userId, problems) {
@@ -42,7 +43,7 @@ async function saveStats(userId, platform, stats, problems) {
 
 async function handleOf(userId, key) {
   const user = await User.findById(userId).select('handles').lean();
-  const handle = user?.handles?.[key]?.trim();
+  const handle = normalizeHandle(key, user?.handles?.[key]);
   if (!handle) {
     const err = new Error(`No ${key} handle saved. Add it in Settings first.`);
     err.statusCode = 400;

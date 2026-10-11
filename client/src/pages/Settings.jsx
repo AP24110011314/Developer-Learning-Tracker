@@ -77,8 +77,8 @@ export default function Settings() {
           <textarea placeholder="Bio" value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} className="w-full border p-2 rounded" rows={2} />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <input placeholder="Timezone (e.g. Asia/Kolkata)" value={form.timezone} onChange={(e) => setForm({ ...form, timezone: e.target.value })} className="border p-2 rounded" />
-            <input placeholder="LeetCode handle" value={form.leetcode} onChange={(e) => setForm({ ...form, leetcode: e.target.value })} className="border p-2 rounded" />
-            <input placeholder="Codeforces handle" value={form.codeforces} onChange={(e) => setForm({ ...form, codeforces: e.target.value })} className="border p-2 rounded" />
+            <input placeholder="LeetCode handle or profile URL" value={form.leetcode} onChange={(e) => setForm({ ...form, leetcode: e.target.value })} className="border p-2 rounded" />
+            <input placeholder="Codeforces handle or profile URL" value={form.codeforces} onChange={(e) => setForm({ ...form, codeforces: e.target.value })} className="border p-2 rounded" />
           </div>
           <button className="bg-black text-white px-4 py-2 rounded" type="submit">Save</button>
         </form>

@@ -1,6 +1,10 @@
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+// Resolve .env next to this file, so the server boots no matter which
+// directory you run it from (host-provided env vars still take precedence).
+dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env') });
 
 import { validateEnv, env } from './src/config/env.js';
 import { connectDB } from './src/config/db.js';

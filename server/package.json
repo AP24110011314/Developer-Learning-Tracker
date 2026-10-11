@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
-    "lint": "node --check server.js && node --check src/app.js && echo \"lint ok (syntax check)\""
+    "lint": "for f in $(find server.js src tests -name '*.js'); do node --check \"$f\" || exit 1; done; echo \"lint ok (syntax check)\""
   },
   "dependencies": {
     "axios": "^1.7.7",

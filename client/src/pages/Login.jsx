@@ -5,6 +5,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import Logo from '../components/Logo.jsx';
+import { Input } from '../components/ui/Input.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { Sun, Moon } from 'lucide-react';
@@ -99,45 +100,37 @@ export default function Login() {
               </motion.div>
             )}
 
-            <div className="space-y-1.5">
-              <label htmlFor="login-email" className="block text-sm font-medium text-[var(--text-primary)]">Email</label>
-              <div className="relative">
-                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  id="login-email"
-                  type="email"
-                  required
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="input pl-9"
-                />
-              </div>
-            </div>
+            <Input
+              id="login-email"
+              label="Email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              icon={Mail}
+            />
 
-            <div className="space-y-1.5">
-              <label htmlFor="login-password" className="block text-sm font-medium text-[var(--text-primary)]">Password</label>
-              <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  id="login-password"
-                  type={showPw ? 'text' : 'password'}
-                  required
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="input pl-9 pr-10"
-                />
+            <Input
+              id="login-password"
+              label="Password"
+              type={showPw ? 'text' : 'password'}
+              required
+              placeholder="••••••••"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              icon={Lock}
+              rightElement={
                 <button
                   type="button"
                   onClick={() => setShowPw((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                  className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                   aria-label={showPw ? 'Hide password' : 'Show password'}
                 >
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
-              </div>
-            </div>
+              }
+            />
 
             <Button type="submit" size="lg" loading={loading} className="w-full justify-center">
               Sign in <ArrowRight size={16} />

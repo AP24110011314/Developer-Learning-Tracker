@@ -5,6 +5,7 @@ import { AtSign, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucid
 import { useAuth } from '../context/AuthContext.jsx';
 import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import Logo from '../components/Logo.jsx';
+import { Input } from '../components/ui/Input.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { Sun, Moon } from 'lucide-react';
@@ -115,62 +116,49 @@ export default function Register() {
               </motion.div>
             )}
 
-            <div className="space-y-1.5">
-              <label htmlFor="reg-username" className="block text-sm font-medium text-[var(--text-primary)]">Username</label>
-              <div className="relative">
-                <AtSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  id="reg-username"
-                  required
-                  placeholder="devhero"
-                  value={form.username}
-                  onChange={(e) => setForm({ ...form, username: e.target.value })}
-                  className="input pl-9"
-                />
-              </div>
-              <p className="text-xs text-[var(--text-muted)]">Letters, numbers, _ only. 3–30 characters.</p>
-            </div>
+            <Input
+              id="reg-username"
+              label="Username"
+              required
+              placeholder="devhero"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              icon={AtSign}
+              hint="Letters, numbers, _ only. 3–30 characters."
+            />
 
-            <div className="space-y-1.5">
-              <label htmlFor="reg-email" className="block text-sm font-medium text-[var(--text-primary)]">Email</label>
-              <div className="relative">
-                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  id="reg-email"
-                  type="email"
-                  required
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="input pl-9"
-                />
-              </div>
-            </div>
+            <Input
+              id="reg-email"
+              label="Email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              icon={Mail}
+            />
 
-            <div className="space-y-1.5">
-              <label htmlFor="reg-password" className="block text-sm font-medium text-[var(--text-primary)]">Password</label>
-              <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  id="reg-password"
-                  type={showPw ? 'text' : 'password'}
-                  required
-                  minLength={8}
-                  placeholder="Min. 8 characters"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="input pl-9 pr-10"
-                />
+            <Input
+              id="reg-password"
+              label="Password"
+              type={showPw ? 'text' : 'password'}
+              required
+              minLength={8}
+              placeholder="Min. 8 characters"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              icon={Lock}
+              rightElement={
                 <button
                   type="button"
                   onClick={() => setShowPw((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                  className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                   aria-label={showPw ? 'Hide password' : 'Show password'}
                 >
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
-              </div>
-            </div>
+              }
+            />
 
             <Button type="submit" size="lg" loading={loading} className="w-full justify-center">
               Create account <ArrowRight size={16} />

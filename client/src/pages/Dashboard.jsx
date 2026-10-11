@@ -2,17 +2,23 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip,
-  LineChart, Line, CartesianGrid, ResponsiveContainer, AreaChart, Area,
+  CartesianGrid, ResponsiveContainer, AreaChart, Area,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from 'recharts';
 import { motion } from 'framer-motion';
-import { Flame, Trophy, TrendingUp, Calendar, Plus, ArrowRight, Code2, BookOpen } from 'lucide-react';
+import {
+  Flame, Trophy, TrendingUp, Plus, ArrowRight, Code2,
+  ExternalLink, Target, Play, BarChart3, Radio
+} from 'lucide-react';
 import api from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import Heatmap from '../components/Heatmap.jsx';
 import { StatCard } from '../components/ui/Card.jsx';
-import { Skeleton, SkeletonStatCards } from '../components/ui/Skeleton.jsx';
+import { SkeletonStatCards } from '../components/ui/Skeleton.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
 import { ProgressRing } from '../components/ui/ProgressBar.jsx';
+import Badge, { DifficultyBadge, StatusBadge } from '../components/ui/Badge.jsx';
+import Button from '../components/ui/Button.jsx';
 
 // Semantic chart colors
 const DIFF_COLORS = {
@@ -48,7 +54,7 @@ function CustomTooltip({ active, payload, label }) {
       <div className="font-semibold text-[var(--text-primary)]">{label}</div>
       {payload.map((p) => (
         <div key={p.name} className="flex items-center gap-2 text-[var(--text-secondary)]">
-          <span className="w-2 h-2 rounded-full" style={{ background: p.color }} />
+          <span className="w-2 h-2 rounded-full" style={{ background: p.color || p.stroke || p.fill }} />
           {p.name}: <span className="font-bold text-[var(--text-primary)]">{p.value}</span>
         </div>
       ))}
@@ -63,24 +69,36 @@ export default function Dashboard() {
   const [topics, setTopics] = useState([]);
   const [weekly, setWeekly] = useState([]);
   const [heatmap, setHeatmap] = useState({});
+  const [recentProblem, setRecentProblem] = useState(null);
+  const [weeklyGoal, setWeeklyGoal] = useState(null);
+  const [topicChartType, setTopicChartType] = useState('bar'); // 'bar' | 'radar'
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
-        const [o, d, t, w, h] = await Promise.all([
+        const [o, d, t, w, h, pRes, gRes] = await Promise.all([
           api.get('/stats/overview'),
           api.get('/stats/difficulty'),
           api.get('/stats/topics'),
           api.get('/stats/weekly'),
           api.get('/stats/heatmap'),
+          api.get('/problems', { params: { limit: 1 } }).catch(() => ({ data: { items: [] } })),
+          api.get('/goals').catch(() => ({ data: [] })),
         ]);
         setOverview(o.data);
         setDifficulty(d.data);
         setTopics(t.data);
         setWeekly(w.data.weeks);
         setHeatmap(h.data.counts);
+        if (pRes.data?.items?.length) {
+          setRecentProblem(pRes.data.items[0]);
+        }
+        if (gRes.data?.length) {
+          const goal = gRes.data.find((g) => g.metric === 'problems') || gRes.data[0];
+          setWeeklyGoal(goal);
+        }
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to load stats');
       } finally {
@@ -99,6 +117,17 @@ export default function Dashboard() {
 
   const totalSolved = donut.reduce((s, d) => s + d.value, 0);
 
+  // Radar data format from top 6 topics
+  const radarData = topics.slice(0, 6).map((t) => ({
+    topic: t.topic,
+    count: t.count,
+  }));
+
+  // Weekly goal target & current
+  const goalTarget = weeklyGoal ? weeklyGoal.target : 7;
+  const goalCurrent = weeklyGoal ? weeklyGoal.progress.current : (overview?.thisWeek || 0);
+  const goalPercent = Math.min(100, Math.round((goalCurrent / goalTarget) * 100));
+
   return (
     <div className="space-y-6">
       {/* ── Hero greeting ─────────────────────────────────────────── */}
@@ -108,7 +137,7 @@ export default function Dashboard() {
         transition={{ duration: 0.45 }}
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-500 via-violet-500 to-pink-500 p-6 md:p-8 text-white"
       >
-        {/* Decorative circles */}
+        {/* Decorative background glow */}
         <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/10" />
         <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-white/10" />
         <div className="absolute top-8 right-24 w-16 h-16 rounded-full bg-white/10" />
@@ -121,14 +150,23 @@ export default function Dashboard() {
             {getGreeting()}, {user?.username}!
           </h1>
           <p className="mt-2 text-white/80 text-sm md:text-base">{motivation}</p>
-          <Link
-            to="/problems"
-            className="mt-5 inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white font-semibold px-5 py-2.5 rounded-xl text-sm"
-          >
-            <Plus size={16} />
-            Log a problem
-            <ArrowRight size={14} />
-          </Link>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              to="/problems"
+              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white font-semibold px-5 py-2.5 rounded-xl text-sm"
+            >
+              <Plus size={16} />
+              Log a problem
+              <ArrowRight size={14} />
+            </Link>
+            <Link
+              to="/goals"
+              className="inline-flex items-center gap-2 bg-black/20 hover:bg-black/30 transition-colors text-white/90 font-medium px-4 py-2.5 rounded-xl text-sm"
+            >
+              <Target size={16} />
+              View Goals
+            </Link>
+          </div>
         </div>
       </motion.div>
 
@@ -172,6 +210,108 @@ export default function Dashboard() {
       {error && (
         <p className="text-rose-500 text-sm font-medium">{error}</p>
       )}
+
+      {/* ── Weekly Goal Ring & Continue Where You Left Off ──────────── */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {/* Weekly Goal Ring */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+          className="card p-5 flex items-center justify-between"
+        >
+          <div className="space-y-2 max-w-[65%]">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-5 rounded-full bg-gradient-to-b from-indigo-500 to-pink-500" />
+              <h2 className="font-bold text-[var(--text-primary)]">
+                {weeklyGoal ? weeklyGoal.title : 'Weekly Target'}
+              </h2>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)]">
+              {weeklyGoal
+                ? `${goalCurrent} of ${goalTarget} completed towards goal`
+                : `${goalCurrent} problems solved this week (Target: ${goalTarget})`}
+            </p>
+            <div className="pt-2">
+              <Link to="/goals" className="inline-flex items-center gap-1 text-xs font-semibold text-primary-500 hover:underline">
+                Manage weekly goals <ArrowRight size={12} />
+              </Link>
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <ProgressRing
+              value={goalCurrent}
+              max={goalTarget}
+              size={90}
+              strokeWidth={9}
+              color="#8b5cf6"
+            >
+              <div className="flex flex-col items-center">
+                <span className="text-sm font-extrabold text-[var(--text-primary)]">{goalPercent}%</span>
+                <span className="text-[10px] text-[var(--text-muted)] font-medium">completed</span>
+              </div>
+            </ProgressRing>
+          </div>
+        </motion.div>
+
+        {/* Continue where you left off */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.18 }}
+          className="card p-5 flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-5 rounded-full bg-gradient-to-b from-amber-400 to-rose-500" />
+              <h2 className="font-bold text-[var(--text-primary)]">Continue Where You Left Off</h2>
+            </div>
+            <span className="text-xs text-[var(--text-muted)] font-medium">Recent Problem</span>
+          </div>
+
+          {recentProblem ? (
+            <div className="space-y-3">
+              <div>
+                <h3 className="font-semibold text-[var(--text-primary)] text-sm line-clamp-1">
+                  {recentProblem.title}
+                </h3>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <DifficultyBadge difficulty={recentProblem.difficulty} />
+                  <StatusBadge status={recentProblem.status} />
+                  {recentProblem.platform && (
+                    <Badge variant="cyan">{recentProblem.platform}</Badge>
+                  )}
+                  {recentProblem.topics?.slice(0, 2).map((t) => (
+                    <Badge key={t} topic={t} variant="topic">{t}</Badge>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-[var(--border)]">
+                <span className="text-xs text-[var(--text-muted)]">
+                  {new Date(recentProblem.createdAt).toLocaleDateString()}
+                </span>
+                <Link to="/problems">
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs py-1.5">
+                    <Play size={12} className="fill-current" />
+                    Resume in Problems
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="py-2 text-center">
+              <p className="text-xs text-[var(--text-secondary)] mb-3">
+                No recent problem yet. Start your journey with your first solved problem!
+              </p>
+              <Link to="/problems">
+                <Button variant="primary" size="sm" className="gap-1 text-xs">
+                  <Plus size={14} /> Add First Problem
+                </Button>
+              </Link>
+            </div>
+          )}
+        </motion.div>
+      </div>
 
       {/* ── Charts row ────────────────────────────────────────────── */}
       <div className="grid md:grid-cols-2 gap-4">
@@ -236,20 +376,45 @@ export default function Dashboard() {
           )}
         </motion.div>
 
-        {/* Top topics bar chart */}
+        {/* Top topics & Radar strength chart */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.25 }}
           className="card p-5"
         >
-          <h2 className="font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-cyan-400 to-primary-500" />
-            Top Topics
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <div className="w-1 h-5 rounded-full bg-gradient-to-b from-cyan-400 to-primary-500" />
+              {topicChartType === 'bar' ? 'Top Topics' : 'Topic Strength Radar'}
+            </h2>
+            <div className="flex rounded-xl bg-[var(--bg-secondary)] p-1 border border-[var(--border)]">
+              <button
+                onClick={() => setTopicChartType('bar')}
+                className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
+                  topicChartType === 'bar'
+                    ? 'bg-[var(--bg-card)] text-primary-500 shadow-sm'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                Bar
+              </button>
+              <button
+                onClick={() => setTopicChartType('radar')}
+                className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
+                  topicChartType === 'radar'
+                    ? 'bg-[var(--bg-card)] text-primary-500 shadow-sm'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                Radar
+              </button>
+            </div>
+          </div>
+
           {topics.length === 0 ? (
             <EmptyState icon="empty" title="No topic data yet" description="Tag your problems with topics to see insights." />
-          ) : (
+          ) : topicChartType === 'bar' ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={topics.slice(0, 8)} layout="vertical" margin={{ left: 4, right: 8 }}>
                 <defs>
@@ -263,6 +428,16 @@ export default function Dashboard() {
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="count" name="Solved" fill="url(#barGrad)" radius={[0, 6, 6, 0]} />
               </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <ResponsiveContainer width="100%" height={220}>
+              <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
+                <PolarGrid stroke="var(--border)" />
+                <PolarAngleAxis dataKey="topic" tick={{ fill: 'var(--text-secondary)', fontSize: 10 }} />
+                <PolarRadiusAxis angle={30} tick={{ fill: 'var(--text-muted)', fontSize: 9 }} />
+                <Radar name="Strength" dataKey="count" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.4} />
+                <Tooltip content={<CustomTooltip />} />
+              </RadarChart>
             </ResponsiveContainer>
           )}
         </motion.div>

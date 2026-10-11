@@ -77,3 +77,25 @@ export function TopicTag({ topic }) {
     </span>
   );
 }
+
+export function DifficultyBadge({ difficulty }) {
+  if (!difficulty) return null;
+  const d = difficulty.toLowerCase();
+  return (
+    <Badge variant={d} dot>
+      {d.charAt(0).toUpperCase() + d.slice(1)}
+    </Badge>
+  );
+}
+
+export function StatusBadge({ status }) {
+  if (!status) return null;
+  const s = status.toLowerCase();
+  return (
+    <Badge variant={s} dot>
+      {s.charAt(0).toUpperCase() + s.slice(1)}
+    </Badge>
+  );
+}
+
+export default Badge;

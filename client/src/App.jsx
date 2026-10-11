@@ -11,6 +11,8 @@ import Goals from './pages/Goals.jsx';
 import Projects from './pages/Projects.jsx';
 import Settings from './pages/Settings.jsx';
 import PublicProfile from './pages/PublicProfile.jsx';
+import { useAuth } from './context/AuthContext.jsx';
+import Landing from './pages/Landing.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 function AuthenticatedApp({ children }) {
@@ -18,6 +20,24 @@ function AuthenticatedApp({ children }) {
     <ProtectedRoute>
       <AppShell>{children}</AppShell>
     </ProtectedRoute>
+  );
+}
+
+function HomeRoute() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+  return user ? (
+    <AuthenticatedApp>
+      <Dashboard />
+    </AuthenticatedApp>
+  ) : (
+    <Landing />
   );
 }
 
@@ -29,14 +49,8 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route
-              path="/"
-              element={
-                <AuthenticatedApp>
-                  <Dashboard />
-                </AuthenticatedApp>
-              }
-            />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/" element={<HomeRoute />} />
             <Route
               path="/problems"
               element={

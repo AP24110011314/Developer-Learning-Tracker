@@ -53,3 +53,5 @@ export function Button({
     </motion.button>
   );
 }
+
+export default Button;

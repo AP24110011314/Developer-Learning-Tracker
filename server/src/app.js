@@ -6,6 +6,7 @@ import { env } from './config/env.js';
 import { globalLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.js';
+import problemRoutes from './routes/problems.js';
 
 export function createApp() {
   const app = express();
@@ -23,6 +24,7 @@ export function createApp() {
   app.get('/api/health', (req, res) => res.json({ ok: true, env: env.NODE_ENV }));
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/problems', problemRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

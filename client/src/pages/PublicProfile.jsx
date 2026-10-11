@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Zap, Code2, Flame, Trophy, ExternalLink, GitBranch, Globe } from 'lucide-react';
+import { Code2, Flame, Trophy, GitBranch, Globe } from 'lucide-react';
 import api from '../api.js';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
+import Logo from '../components/Logo.jsx';
 import Heatmap from '../components/Heatmap.jsx';
 import { TopicTag } from '../components/ui/Badge.jsx';
 import { Skeleton } from '../components/ui/Skeleton.jsx';
@@ -11,6 +13,8 @@ export default function PublicProfile() {
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
   const [status, setStatus] = useState('loading');
+
+  useDocumentTitle(status === 'ok' && profile ? profile.username : 'Profile');
 
   useEffect(() => {
     setStatus('loading');
@@ -59,11 +63,8 @@ export default function PublicProfile() {
     <div className="min-h-screen bg-[var(--bg-page)]">
       {/* Top nav */}
       <header className="glass sticky top-0 z-30 px-6 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center">
-            <Zap size={13} className="text-white" />
-          </div>
-          <span className="font-extrabold text-[var(--text-primary)]">DLT</span>
+        <Link to="/" aria-label="BigO home">
+          <Logo size={28} withText />
         </Link>
         <Link to="/login" className="text-sm font-semibold text-primary-500 hover:text-primary-600 transition-colors">
           Sign in

@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Zap, AtSign, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { AtSign, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
+import Logo from '../components/Logo.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { Sun, Moon } from 'lucide-react';
@@ -15,6 +17,7 @@ const FEATURES = [
 ];
 
 export default function Register() {
+  useDocumentTitle('Create account');
   const { register } = useAuth();
   const { theme, toggle } = useTheme();
   const nav = useNavigate();
@@ -51,16 +54,14 @@ export default function Register() {
         </div>
         <div className="relative">
           <div className="flex items-center gap-3 mb-12">
-            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-              <Zap size={20} />
-            </div>
-            <span className="text-2xl font-extrabold">DLT</span>
+            <Logo size={40} />
+            <span className="text-2xl font-extrabold">Big<span className="gradient-text">O</span></span>
           </div>
           <h2 className="text-4xl font-extrabold leading-tight mb-4">
             Start your<br />coding journey
           </h2>
           <p className="text-white/80 text-lg mb-8">
-            Join thousands of developers who track their learning progress with DLT.
+            Join thousands of developers who track their coding journey with BigO.
           </p>
           <ul className="space-y-3">
             {FEATURES.map((f) => (
@@ -95,10 +96,7 @@ export default function Register() {
           className="w-full max-w-sm space-y-6"
         >
           <div className="lg:hidden flex items-center gap-2 justify-center mb-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center">
-              <Zap size={18} className="text-white" />
-            </div>
-            <span className="text-xl font-extrabold text-[var(--text-primary)]">DLT</span>
+            <Logo size={36} withText />
           </div>
 
           <div>

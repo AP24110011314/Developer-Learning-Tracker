@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import api from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import Heatmap from '../components/Heatmap.jsx';
 import { StatCard } from '../components/ui/Card.jsx';
 import { SkeletonStatCards } from '../components/ui/Skeleton.jsx';
@@ -63,6 +64,7 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function Dashboard() {
+  useDocumentTitle('Dashboard');
   const { user } = useAuth();
   const [overview, setOverview] = useState(null);
   const [difficulty, setDifficulty] = useState(null);

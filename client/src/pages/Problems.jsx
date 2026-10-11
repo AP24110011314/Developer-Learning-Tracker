@@ -6,6 +6,7 @@ import {
   Edit3, Trash2, ChevronLeft, ChevronRight, X,
 } from 'lucide-react';
 import api from '../api.js';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Badge, TopicTag } from '../components/ui/Badge.jsx';
 import { Card, CardBody } from '../components/ui/Card.jsx';
@@ -186,6 +187,7 @@ function TableRow({ p, onEdit, onDelete, onStatusChange }) {
 }
 
 export default function Problems() {
+  useDocumentTitle('Problems');
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState({ page: 1, totalPages: 1, total: 0 });
   const [filters, setFilters] = useState({ difficulty: '', status: '', q: '', from: '', to: '', page: 1, limit: 20 });

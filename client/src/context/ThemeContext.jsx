@@ -4,7 +4,7 @@ const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('dlt-theme');
+    const saved = localStorage.getItem('bigo-theme');
     if (saved) return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
@@ -16,7 +16,7 @@ export function ThemeProvider({ children }) {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('dlt-theme', theme);
+    localStorage.setItem('bigo-theme', theme);
   }, [theme]);
 
   const toggle = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));

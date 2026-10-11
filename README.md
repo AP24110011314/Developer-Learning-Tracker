@@ -1,4 +1,6 @@
-# Developer Learning Tracker
+# BigO
+
+> Code daily. Track everything. Share your journey.
 
 A MERN full-stack app to track your coding practice: log solved problems, watch
 streaks and charts grow, set goals, showcase projects, sync Codeforces/LeetCode

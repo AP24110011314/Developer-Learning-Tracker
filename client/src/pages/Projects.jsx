@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Plus, Edit3, Trash2, GitBranch, Globe, Star, Code2, Layers } from 'lucide-react';
 import api from '../api.js';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Modal } from '../components/ui/Modal.jsx';
 import { Input, Select, Textarea } from '../components/ui/Input.jsx';
@@ -121,6 +122,7 @@ function ProjectCard({ p, onEdit, onDelete, index }) {
 }
 
 export default function Projects() {
+  useDocumentTitle('Projects');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);

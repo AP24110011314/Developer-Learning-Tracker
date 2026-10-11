@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { User, Globe, Lock, Loader2, RefreshCw, Shield, Link2 } from 'lucide-react';
 import api from '../api.js';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Input, Textarea } from '../components/ui/Input.jsx';
@@ -34,6 +35,7 @@ function Section({ title, icon: Icon, description, children, index = 0 }) {
 }
 
 export default function Settings() {
+  useDocumentTitle('Settings');
   const { user, refreshMe } = useAuth();
   const [form, setForm] = useState({
     bio: '', timezone: '', leetcode: '', codeforces: '',

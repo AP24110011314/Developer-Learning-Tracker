@@ -15,10 +15,13 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext.jsx';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
+import Logo from '../components/Logo.jsx';
 import Button from '../components/ui/Button.jsx';
 import Badge from '../components/ui/Badge.jsx';
 
 export default function Landing() {
+  useDocumentTitle('');
   const { theme, toggleTheme } = useTheme();
 
   const features = [
@@ -65,14 +68,9 @@ export default function Landing() {
       {/* ── Navbar ─────────────────────────────────────────────────── */}
       <nav className="sticky top-0 z-40 bg-[var(--bg-card)]/80 backdrop-blur-md border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-primary-500/20">
-              <Code2 size={22} className="stroke-[2.5]" />
-            </div>
-            <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-primary-500 via-violet-500 to-pink-500 bg-clip-text text-transparent">
-              DevTracker
-            </span>
-          </div>
+          <Link to="/" aria-label="BigO home">
+            <Logo size={40} withText />
+          </Link>
 
           <div className="flex items-center gap-3">
             <button
@@ -112,12 +110,20 @@ export default function Landing() {
               The All-in-One Developer Growth Platform
             </div>
 
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-6">
+            <div className="flex justify-center mb-6">
+              <Logo size={72} />
+            </div>
+
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-4">
               Track your coding problems.{' '}
               <span className="bg-gradient-to-r from-primary-500 via-violet-500 to-pink-500 bg-clip-text text-transparent">
                 Master your craft.
               </span>
             </h1>
+
+            <p className="max-w-2xl mx-auto text-lg sm:text-xl font-semibold text-[var(--text-primary)] mb-2">
+              Code daily. Track everything. Share your journey.
+            </p>
 
             <p className="max-w-2xl mx-auto text-lg sm:text-xl text-[var(--text-secondary)] font-normal mb-8">
               Organize algorithms, analyze difficulty breakdowns, monitor daily streaks, and stay accountable across LeetCode, Codeforces, and personal projects.
@@ -285,12 +291,9 @@ export default function Landing() {
       <footer className="border-t border-[var(--border)] py-8 text-center text-xs text-[var(--text-muted)]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-primary-500 to-pink-500 flex items-center justify-center text-white">
-              <Code2 size={14} />
-            </div>
-            <span className="font-bold text-[var(--text-secondary)]">Developer Learning Tracker</span>
+            <Logo size={24} withText />
           </div>
-          <div>© {new Date().getFullYear()} DevTracker. Built with React, Vite & Tailwind.</div>
+          <div>© {new Date().getFullYear()} BigO. Built with React, Vite & Tailwind.</div>
         </div>
       </footer>
     </div>

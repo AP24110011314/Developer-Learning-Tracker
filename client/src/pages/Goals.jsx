@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Plus, Edit3, Trash2, Target, CheckCircle2, Clock } from 'lucide-react';
 import api from '../api.js';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Card, CardBody } from '../components/ui/Card.jsx';
 import { Modal } from '../components/ui/Modal.jsx';
@@ -111,6 +112,7 @@ function GoalCard({ g, onEdit, onDelete, index }) {
 }
 
 export default function Goals() {
+  useDocumentTitle('Goals');
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);

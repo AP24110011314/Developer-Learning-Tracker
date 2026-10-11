@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import Logo from './Logo.jsx';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -13,7 +14,7 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-b px-4 py-3 flex items-center justify-between">
       <div className="flex gap-4 items-center">
-        <Link to="/" className="font-bold">DLT</Link>
+        <Link to="/" aria-label="BigO home"><Logo size={28} withText /></Link>
         <Link to="/" className="text-sm hover:underline">Dashboard</Link>
         <Link to="/problems" className="text-sm hover:underline">Problems</Link>
         <Link to="/goals" className="text-sm hover:underline">Goals</Link>

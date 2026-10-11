@@ -1,11 +1,17 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, ArrowLeft, Zap } from 'lucide-react';
+import { Home, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/Button.jsx';
+import useDocumentTitle from '../hooks/useDocumentTitle.js';
+import Logo from '../components/Logo.jsx';
 
 export default function NotFound() {
+  useDocumentTitle('Page not found');
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-page)] p-6 text-center">
+      <Link to="/" aria-label="BigO home" className="mb-2">
+        <Logo size={48} withText />
+      </Link>
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

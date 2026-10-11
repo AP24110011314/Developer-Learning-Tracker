@@ -3,12 +3,12 @@ import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, ListChecks, Target, FolderGit2, Settings, User,
-  Sun, Moon, Menu, X, Search, LogOut, ChevronLeft,
-  Zap, BookOpen,
+  Sun, Moon, Menu, X, LogOut, ChevronLeft,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { Toaster } from 'react-hot-toast';
+import Logo from './Logo.jsx';
 
 const NAV_ITEMS = [
   { to: '/',          label: 'Dashboard', icon: LayoutDashboard },
@@ -45,20 +45,13 @@ function SidebarContent({ collapsed, setCollapsed }) {
       {/* Logo */}
       <div className="flex items-center justify-between px-4 py-5">
         {!collapsed && (
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center">
-              <Zap size={16} className="text-white" />
-            </div>
-            <span className="font-extrabold text-[var(--text-primary)] text-lg tracking-tight">
-              DLT
-            </span>
+          <Link to="/" aria-label="BigO home">
+            <Logo size={32} withText />
           </Link>
         )}
         {collapsed && (
-          <Link to="/" className="mx-auto">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-violet-500 flex items-center justify-center">
-              <Zap size={16} className="text-white" />
-            </div>
+          <Link to="/" className="mx-auto" aria-label="BigO home">
+            <Logo size={32} />
           </Link>
         )}
         <button

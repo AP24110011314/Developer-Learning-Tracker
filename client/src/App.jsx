@@ -8,6 +8,7 @@ import Problems from './pages/Problems.jsx';
 import Goals from './pages/Goals.jsx';
 import Projects from './pages/Projects.jsx';
 import Settings from './pages/Settings.jsx';
+import PublicProfile from './pages/PublicProfile.jsx';
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/u/:username" element={<PublicProfile />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

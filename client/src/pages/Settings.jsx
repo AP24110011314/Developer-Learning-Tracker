@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar.jsx';
 
 export default function Settings() {
   const { user, refreshMe } = useAuth();
-  const [form, setForm] = useState({ bio: '', timezone: '', leetcode: '', codeforces: '' });
+  const [form, setForm] = useState({ bio: '', timezone: '', leetcode: '', codeforces: '', profilePublic: false, showHeatmap: true, showProjects: true });
   const [stats, setStats] = useState([]);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
@@ -18,6 +18,9 @@ export default function Settings() {
         timezone: user.timezone || 'Asia/Kolkata',
         leetcode: user.handles?.leetcode || '',
         codeforces: user.handles?.codeforces || '',
+        profilePublic: !!user.privacy?.profilePublic,
+        showHeatmap: user.privacy?.showHeatmap !== false,
+        showProjects: user.privacy?.showProjects !== false,
       });
     }
     api.get('/sync/status').then(({ data }) => setStats(data)).catch(() => {});
@@ -32,6 +35,7 @@ export default function Settings() {
         bio: form.bio,
         timezone: form.timezone,
         handles: { leetcode: form.leetcode.trim(), codeforces: form.codeforces.trim() },
+        privacy: { profilePublic: form.profilePublic, showHeatmap: form.showHeatmap, showProjects: form.showProjects },
       });
       await refreshMe();
       setMsg('Profile saved.');
@@ -104,6 +108,28 @@ export default function Settings() {
               </div>
             );
           })}
+        </div>
+
+        <div className="bg-white p-4 rounded shadow space-y-2">
+          <h2 className="font-bold">Privacy</h2>
+          <p className="text-sm text-gray-500">
+            Public profile: <code>/u/{user?.username}</code>
+          </p>
+          {[
+            ['profilePublic', 'Make my profile public'],
+            ['showHeatmap', 'Show activity heatmap on public profile'],
+            ['showProjects', 'Show featured projects on public profile'],
+          ].map(([key, label]) => (
+            <label key={key} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={!!form[key]}
+                onChange={(e) => setForm({ ...form, [key]: e.target.checked })}
+              />
+              {label}
+            </label>
+          ))}
+          <button onClick={save} className="bg-black text-white px-4 py-2 rounded" type="button">Save privacy</button>
         </div>
       </div>
     </div>

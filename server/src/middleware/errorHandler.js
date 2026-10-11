@@ -1,4 +1,7 @@
 export function errorHandler(err, req, res, _next) {
+  if (err?.code === 11000) {
+    return res.status(409).json({ message: 'Duplicate entry: this item was already synced.' });
+  }
   const status = err.statusCode || err.status || 500;
   const message = err.message || 'Internal server error';
   if (status >= 500) {

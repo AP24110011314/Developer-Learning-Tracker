@@ -28,8 +28,13 @@ export async function listProblems(userId, { difficulty, topic, status, from, to
   return { items, page: pg, limit: lim, total, totalPages: Math.ceil(total / lim) };
 }
 
+function stripEmptyExternalId(data) {
+  if (data && !data.externalId) delete data.externalId;
+  return data;
+}
+
 export async function createProblem(userId, data) {
-  const doc = await Problem.create({ ...data, user: userId });
+  const doc = await Problem.create({ ...stripEmptyExternalId({ ...data }), user: userId });
   return doc.toObject();
 }
 
@@ -40,10 +45,14 @@ export async function getProblem(userId, id) {
 }
 
 export async function updateProblem(userId, id, data) {
-  const doc = await Problem.findOneAndUpdate({ _id: id, user: userId }, data, {
-    new: true,
-    runValidators: true,
-  }).lean();
+  const doc = await Problem.findOneAndUpdate(
+    { _id: id, user: userId },
+    stripEmptyExternalId({ ...data }),
+    {
+      new: true,
+      runValidators: true,
+    }
+  ).lean();
   if (!doc) throw notFoundError();
   return doc;
 }

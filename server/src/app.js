@@ -7,6 +7,7 @@ import { globalLimiter } from './middleware/rateLimiter.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.js';
 import problemRoutes from './routes/problems.js';
+import statsRoutes from './routes/stats.js';
 
 export function createApp() {
   const app = express();
@@ -25,6 +26,7 @@ export function createApp() {
 
   app.use('/api/auth', authRoutes);
   app.use('/api/problems', problemRoutes);
+  app.use('/api/stats', statsRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

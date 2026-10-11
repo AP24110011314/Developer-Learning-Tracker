@@ -18,7 +18,15 @@ const problemSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-problemSchema.index({ user: 1, platform: 1, externalId: 1 }, { unique: true, sparse: true });
+problemSchema.index(
+  { user: 1, platform: 1, externalId: 1 },
+  {
+    unique: true,
+    // Only index docs that actually carry a sync externalId, so manual
+    // problems (no externalId) never collide with each other.
+    partialFilterExpression: { externalId: { $type: 'string' } },
+  }
+);
 problemSchema.index({ user: 1, solvedAt: -1 });
 
 export const Problem = mongoose.model('Problem', problemSchema);

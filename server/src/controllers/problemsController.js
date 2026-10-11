@@ -3,6 +3,7 @@ import * as service from '../services/problems.js';
 export async function list(req, res, next) {
   try {
     const result = await service.listProblems(req.user.id, {
+      q: req.query.q,
       difficulty: req.query.difficulty,
       topic: req.query.topic,
       status: req.query.status,

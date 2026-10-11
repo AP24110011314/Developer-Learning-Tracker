@@ -13,6 +13,7 @@ const status = z.enum(['solved', 'revisit', 'stuck']);
 
 const listSchema = z.object({
   query: z.object({
+    q: z.string().max(200).optional(),
     difficulty: difficulty.optional(),
     topic: z.string().max(100).optional(),
     status: status.optional(),

@@ -6,11 +6,20 @@ function notFoundError() {
   return err;
 }
 
-export async function listProblems(userId, { difficulty, topic, status, from, to, page, limit }) {
+export async function listProblems(userId, { q, difficulty, topic, status, from, to, page, limit }) {
   const filter = { user: userId };
   if (difficulty) filter.difficulty = difficulty;
   if (status) filter.status = status;
   if (topic) filter.topics = topic;
+  if (q && q.trim()) {
+    const escaped = q.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, 'i');
+    filter.$or = [
+      { title: regex },
+      { topics: regex },
+      { platform: regex },
+    ];
+  }
   if (from || to) {
     filter.solvedAt = {};
     if (from) filter.solvedAt.$gte = new Date(from);

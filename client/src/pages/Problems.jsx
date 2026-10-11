@@ -188,7 +188,7 @@ function TableRow({ p, onEdit, onDelete, onStatusChange }) {
 export default function Problems() {
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState({ page: 1, totalPages: 1, total: 0 });
-  const [filters, setFilters] = useState({ difficulty: '', status: '', topic: '', from: '', to: '', page: 1, limit: 20 });
+  const [filters, setFilters] = useState({ difficulty: '', status: '', q: '', from: '', to: '', page: 1, limit: 20 });
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -196,8 +196,9 @@ export default function Problems() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [view, setView] = useState('table');
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const searchRef = useRef(null);
+  const debounceTimer = useRef(null);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -232,6 +233,21 @@ export default function Problems() {
     const f = { ...filters, ...patch, page: 1 };
     setFilters(f);
     fetchProblems(f);
+  };
+
+  const handleSearchChange = (val) => {
+    setSearchInput(val);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      applyFilters({ q: val.trim() });
+    }, 300);
+  };
+
+  const clearSearch = () => {
+    setSearchInput('');
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    applyFilters({ q: '' });
+    searchRef.current?.focus();
   };
 
   const changePage = (delta) => {
@@ -316,73 +332,98 @@ export default function Problems() {
   };
 
   // Active filter chips
-  const activeFilters = Object.entries({ difficulty: filters.difficulty, status: filters.status, topic: filters.topic })
+  const activeFilters = Object.entries({
+    difficulty: filters.difficulty,
+    status: filters.status,
+    q: filters.q,
+  })
     .filter(([, v]) => v)
     .map(([k, v]) => ({ key: k, value: v }));
 
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[var(--text-primary)]">Problems</h1>
-          <p className="text-sm text-[var(--text-muted)] mt-0.5">{meta.total} problems logged</p>
+          <h1 className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">Problems</h1>
+          <p className="text-sm text-[var(--text-muted)] mt-0.5">
+            {meta.total} {meta.total === 1 ? 'problem' : 'problems'} logged
+          </p>
         </div>
-        <Button onClick={openAdd} id="add-problem-btn">
+        <Button onClick={openAdd} id="add-problem-btn" className="shadow-md shadow-primary-500/20">
           <Plus size={16} />
-          Add Problem
-          <span className="hidden sm:inline text-white/60 text-xs ml-1">[N]</span>
+          <span>Add Problem</span>
+          <span className="hidden sm:inline bg-white/20 text-white text-[11px] font-bold px-1.5 py-0.5 rounded-md ml-1">N</span>
         </Button>
       </div>
 
       {/* Quick-add search + filters */}
-      <div className="card p-4 space-y-3">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+      <div className="card p-4 space-y-3.5 shadow-sm">
+        <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
+          <div className="relative flex-1 group">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-primary-500 transition-colors pointer-events-none">
+              <Search size={18} />
+            </div>
             <input
               ref={searchRef}
-              placeholder="Search by topic… [/]"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                applyFilters({ topic: e.target.value });
-              }}
-              className="input pl-9"
+              placeholder="Search by title, topic, or platform…"
+              value={searchInput}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-full h-11 pl-11 pr-20 bg-[var(--bg-input)] hover:bg-[var(--bg-card)] focus:bg-[var(--bg-card)] border border-[var(--border)] focus:border-primary-500 rounded-xl text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               id="problems-search"
             />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] transition-colors"
+                  title="Clear search"
+                >
+                  <X size={15} />
+                </button>
+              )}
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[11px] font-medium text-[var(--text-muted)] bg-[var(--bg-card)] border border-[var(--border)] rounded-md shadow-2xs pointer-events-none">
+                /
+              </kbd>
+            </div>
           </div>
-          <Tabs tabs={VIEW_TABS} active={view} onChange={setView} />
+          <div className="flex-shrink-0 self-end sm:self-auto">
+            <Tabs tabs={VIEW_TABS} active={view} onChange={setView} />
+          </div>
         </div>
 
         {/* Filter chips */}
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center pt-1 border-t border-[var(--border)]">
+          <span className="text-xs font-medium text-[var(--text-muted)] mr-1 flex items-center gap-1">
+            <Filter size={12} /> Filters:
+          </span>
           {['easy', 'medium', 'hard'].map((d) => (
             <button
               key={d}
               onClick={() => applyFilters({ difficulty: filters.difficulty === d ? '' : d })}
-              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
                 filters.difficulty === d
-                  ? d === 'easy' ? 'bg-emerald-500 text-white border-emerald-500'
-                  : d === 'medium' ? 'bg-amber-500 text-white border-amber-500'
-                  : 'bg-rose-500 text-white border-rose-500'
-                  : 'bg-[var(--bg-input)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-strong)]'
+                  ? d === 'easy' ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
+                  : d === 'medium' ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
+                  : 'bg-rose-500 text-white border-rose-500 shadow-xs'
+                  : 'bg-[var(--bg-input)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
               }`}
             >
               {d.charAt(0).toUpperCase() + d.slice(1)}
             </button>
           ))}
-          <div className="w-px h-4 bg-[var(--border)]" />
+          <div className="w-px h-4 bg-[var(--border)] mx-1" />
           {['solved', 'revisit', 'stuck'].map((s) => (
             <button
               key={s}
               onClick={() => applyFilters({ status: filters.status === s ? '' : s })}
-              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
                 filters.status === s
-                  ? s === 'solved' ? 'bg-emerald-500 text-white border-emerald-500'
-                  : s === 'revisit' ? 'bg-amber-500 text-white border-amber-500'
-                  : 'bg-rose-500 text-white border-rose-500'
-                  : 'bg-[var(--bg-input)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-strong)]'
+                  ? s === 'solved' ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
+                  : s === 'revisit' ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
+                  : 'bg-rose-500 text-white border-rose-500 shadow-xs'
+                  : 'bg-[var(--bg-input)] text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]'
               }`}
             >
               {STATUS_LABEL[s]}
@@ -392,10 +433,13 @@ export default function Problems() {
           {/* Clear chips */}
           {activeFilters.length > 0 && (
             <button
-              onClick={() => applyFilters({ difficulty: '', status: '', topic: '' })}
-              className="text-xs text-[var(--text-muted)] hover:text-rose-500 flex items-center gap-1 transition-colors ml-auto"
+              onClick={() => {
+                setSearchInput('');
+                applyFilters({ difficulty: '', status: '', q: '' });
+              }}
+              className="text-xs text-[var(--text-muted)] hover:text-rose-500 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-rose-500/10 transition-colors ml-auto font-medium"
             >
-              <X size={12} /> Clear
+              <X size={13} /> Reset filters
             </button>
           )}
         </div>

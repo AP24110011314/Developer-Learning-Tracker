@@ -16,7 +16,10 @@ export default function Register() {
       nav('/', { replace: true });
     } catch (err) {
       const data = err.response?.data;
-      setError(data?.errors ? JSON.stringify(data.errors) : data?.message || 'Register failed');
+      const details = data?.errors
+        ? Object.values(data.errors).flat().filter((m) => typeof m === 'string').join('; ')
+        : '';
+      setError(details || data?.message || 'Register failed');
     }
   };
 
@@ -27,7 +30,7 @@ export default function Register() {
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <input
           className="w-full border p-2 rounded"
-          placeholder="Username"
+          placeholder="Username (letters, numbers, _ only)"
           value={form.username}
           onChange={(e) => setForm({ ...form, username: e.target.value })}
           required

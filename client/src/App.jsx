@@ -5,6 +5,8 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Problems from './pages/Problems.jsx';
+import Goals from './pages/Goals.jsx';
+import Projects from './pages/Projects.jsx';
 
 export default function App() {
   return (
@@ -26,6 +28,22 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Problems />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/goals"
+            element={
+              <ProtectedRoute>
+                <Goals />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <Projects />
               </ProtectedRoute>
             }
           />

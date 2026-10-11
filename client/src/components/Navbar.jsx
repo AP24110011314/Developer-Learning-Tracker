@@ -16,6 +16,8 @@ export default function Navbar() {
         <Link to="/" className="font-bold">DLT</Link>
         <Link to="/" className="text-sm hover:underline">Dashboard</Link>
         <Link to="/problems" className="text-sm hover:underline">Problems</Link>
+        <Link to="/goals" className="text-sm hover:underline">Goals</Link>
+        <Link to="/projects" className="text-sm hover:underline">Projects</Link>
       </div>
       <div className="flex gap-3 items-center text-sm">
         <span className="text-gray-600">{user?.username}</span>

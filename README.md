@@ -4,13 +4,13 @@ A MERN full-stack app to track your coding practice: log solved problems, watch
 streaks and charts grow, set goals, showcase projects, sync Codeforces/LeetCode
 solves, and share a public profile.
 
-## Screenshots
+## 📸 Screenshots
 
-> Placeholder — add screenshots here.
->
-> ![Dashboard](docs/screenshots/dashboard.png)
-> ![Problems](docs/screenshots/problems.png)
+### 🖥️ Dashboard
+![Dashboard](docs/screenshots/dashboard.png)
 
+### 📝 Problems
+![Problems](docs/screenshots/problem.png)
 ## Features
 
 - **Auth** — register/login with short-lived JWT access tokens (15 min) +

@@ -7,10 +7,12 @@ solves, and share a public profile.
 ## 📸 Screenshots
 
 ### 🖥️ Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
+
+![Dashboard](Screenshots/dashboard.png)
 
 ### 📝 Problems
-![Problems](docs/screenshots/problem.png)
+
+![Problems](Screenshots/problem.png)
 ## Features
 
 - **Auth** — register/login with short-lived JWT access tokens (15 min) +

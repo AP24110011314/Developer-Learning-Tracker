@@ -29,8 +29,8 @@ export default function Heatmap({ counts = {}, year }) {
   const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
-    <div className="overflow-x-auto pb-1">
-      <div className="inline-flex gap-0.5">
+    <div className="overflow-x-auto pb-2 touch-pan-x overscroll-x-contain">
+      <div className="inline-flex gap-0.5 min-w-max">
         {/* Day-of-week labels */}
         <div className="flex flex-col gap-[3px] mr-1">
           {DAYS.map((d, i) => (

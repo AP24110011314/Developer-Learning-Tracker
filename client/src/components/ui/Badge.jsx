@@ -51,14 +51,14 @@ export function Badge({ children, variant, dot = false, className, ...props }) {
  * Topic tag with a stable color derived from the topic name.
  */
 const TOPIC_PALETTES = [
-  'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300',
-  'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
-  'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
-  'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
-  'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
-  'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
-  'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-  'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
+  'bg-violet-100 text-violet-700',
+  'bg-cyan-100 text-cyan-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-amber-100 text-amber-700',
+  'bg-pink-100 text-pink-700',
+  'bg-indigo-100 text-indigo-700',
+  'bg-orange-100 text-orange-700',
+  'bg-teal-100 text-teal-700',
 ];
 
 function hashTopic(str) {

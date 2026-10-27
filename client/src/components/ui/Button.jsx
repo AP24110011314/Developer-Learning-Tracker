@@ -13,7 +13,7 @@ const variants = {
   danger:
     'bg-rose-500 text-white hover:bg-rose-600 shadow-sm hover:shadow-md active:scale-[0.98]',
   outline:
-    'border border-[var(--border-focus)] text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-950 active:scale-[0.98]',
+    'border border-[var(--border-focus)] text-primary-500 hover:bg-primary-50 active:scale-[0.98]',
 };
 
 const sizes = {

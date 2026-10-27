@@ -6,8 +6,6 @@ import { useAuth } from '../context/AuthContext.jsx';
 import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import Logo from '../components/Logo.jsx';
 import { Button } from '../components/ui/Button.jsx';
-import { useTheme } from '../context/ThemeContext.jsx';
-import { Sun, Moon } from 'lucide-react';
 
 const FEATURES = [
   'Track problems across platforms',
@@ -19,7 +17,6 @@ const FEATURES = [
 export default function Register() {
   useDocumentTitle('Create account');
   const { register } = useAuth();
-  const { theme, toggle } = useTheme();
   const nav = useNavigate();
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
@@ -78,17 +75,7 @@ export default function Register() {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 relative">
-        <div className="absolute top-4 right-4">
-          <button
-            onClick={toggle}
-            aria-label="Toggle theme"
-            className="p-2.5 rounded-xl text-[var(--text-muted)] hover:bg-[var(--bg-input)] transition-colors"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-        </div>
-
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -109,7 +96,7 @@ export default function Register() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="px-4 py-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-sm"
+                className="px-4 py-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm"
               >
                 {error}
               </motion.div>

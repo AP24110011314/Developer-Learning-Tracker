@@ -3,10 +3,9 @@ import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, ListChecks, Target, FolderGit2, Settings, User,
-  Sun, Moon, Menu, X, LogOut, ChevronLeft,
+  Menu, X, LogOut, ChevronLeft,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
-import { useTheme } from '../context/ThemeContext.jsx';
 import { Toaster } from 'react-hot-toast';
 import Logo from './Logo.jsx';
 
@@ -18,24 +17,12 @@ const NAV_ITEMS = [
   { to: '/settings',  label: 'Settings',  icon: Settings },
 ];
 
-function ThemeToggle() {
-  const { theme, toggle } = useTheme();
-  return (
-    <button
-      onClick={toggle}
-      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      className="p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-input)] hover:text-[var(--text-primary)] transition-colors"
-    >
-      {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
-  );
-}
-
-function SidebarContent({ collapsed, setCollapsed }) {
+function SidebarContent({ collapsed, setCollapsed, onClose }) {
   const { user, logout } = useAuth();
   const nav = useNavigate();
 
   const doLogout = async () => {
+    onClose?.();
     await logout();
     nav('/login');
   };
@@ -45,22 +32,33 @@ function SidebarContent({ collapsed, setCollapsed }) {
       {/* Logo */}
       <div className="flex items-center justify-between px-4 py-5">
         {!collapsed && (
-          <Link to="/" aria-label="BigO home">
+          <Link to="/" aria-label="BigO home" onClick={onClose}>
             <Logo size={32} withText />
           </Link>
         )}
         {collapsed && (
-          <Link to="/" className="mx-auto" aria-label="BigO home">
+          <Link to="/" className="mx-auto" aria-label="BigO home" onClick={onClose}>
             <Logo size={32} />
           </Link>
         )}
-        <button
-          onClick={() => setCollapsed((c) => !c)}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="hidden lg:flex p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)] transition-colors"
-        >
-          <ChevronLeft size={16} className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
-        </button>
+        {setCollapsed && (
+          <button
+            onClick={() => setCollapsed((c) => !c)}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className="hidden lg:flex p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)] transition-colors"
+          >
+            <ChevronLeft size={16} className={`transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
+          </button>
+        )}
+        {onClose && (
+          <button
+            onClick={onClose}
+            aria-label="Close navigation menu"
+            className="lg:hidden p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
 
       {/* Nav */}
@@ -70,6 +68,7 @@ function SidebarContent({ collapsed, setCollapsed }) {
             key={to}
             to={to}
             end={to === '/'}
+            onClick={onClose}
             className={({ isActive }) =>
               `sidebar-link ${isActive ? 'active' : ''} ${collapsed ? 'justify-center' : ''}`
             }
@@ -119,25 +118,27 @@ function SidebarContent({ collapsed, setCollapsed }) {
 /** Bottom tab bar for mobile */
 function BottomTabBar() {
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-[var(--border)] px-2 py-1 safe-area-inset-bottom">
-      <div className="flex items-center justify-around">
-        {NAV_ITEMS.filter(item => item.to !== '/settings').map(({ to, label, icon: Icon }) => (
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[var(--border)] px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+      <div className="flex items-center justify-around max-w-md mx-auto">
+        {NAV_ITEMS.filter((item) => item.to !== '/settings').map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
             end={to === '/'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+              `flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-xs font-medium transition-colors ${
                 isActive
-                  ? 'text-primary-500'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                  ? 'text-primary-600 font-semibold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)] active:scale-95'
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <Icon size={20} className={isActive ? 'text-primary-500' : ''} />
-                <span className="text-[10px]">{label}</span>
+                <div className={`p-1 rounded-lg ${isActive ? 'bg-primary-50 text-primary-600' : ''}`}>
+                  <Icon size={19} />
+                </div>
+                <span className="text-[10px] leading-tight mt-0.5 tracking-tight">{label}</span>
               </>
             )}
           </NavLink>
@@ -145,17 +146,19 @@ function BottomTabBar() {
         <NavLink
           to="/settings"
           className={({ isActive }) =>
-            `flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+            `flex flex-col items-center justify-center min-w-[56px] py-1 px-1 rounded-xl text-xs font-medium transition-colors ${
               isActive
-                ? 'text-primary-500'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                ? 'text-primary-600 font-semibold'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)] active:scale-95'
             }`
           }
         >
           {({ isActive }) => (
             <>
-              <Settings size={20} className={isActive ? 'text-primary-500' : ''} />
-              <span className="text-[10px]">Settings</span>
+              <div className={`p-1 rounded-lg ${isActive ? 'bg-primary-50 text-primary-600' : ''}`}>
+                <Settings size={19} />
+              </div>
+              <span className="text-[10px] leading-tight mt-0.5 tracking-tight">Settings</span>
             </>
           )}
         </NavLink>
@@ -173,7 +176,6 @@ export default function AppShell({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user } = useAuth();
-  const { theme, toggle } = useTheme();
 
   return (
     <>
@@ -208,20 +210,20 @@ export default function AppShell({ children }) {
           {mobileOpen && (
             <>
               <motion.div
-                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setMobileOpen(false)}
               />
               <motion.aside
-                className="fixed left-0 top-0 bottom-0 z-50 w-64 bg-[var(--bg-sidebar)] border-r border-[var(--border)] lg:hidden"
-                initial={{ x: -256 }}
+                className="fixed left-0 top-0 bottom-0 z-50 w-72 max-w-[85vw] bg-white border-r border-[var(--border)] lg:hidden shadow-2xl"
+                initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
-                exit={{ x: -256 }}
+                exit={{ x: '-100%' }}
                 transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               >
-                <SidebarContent collapsed={false} setCollapsed={setCollapsed} />
+                <SidebarContent collapsed={false} onClose={() => setMobileOpen(false)} />
               </motion.aside>
             </>
           )}
@@ -230,36 +232,45 @@ export default function AppShell({ children }) {
         {/* ── Main content ─────────────────────────────────────────── */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Sticky top bar */}
-          <header className="glass sticky top-0 z-30 px-4 h-14 flex items-center justify-between gap-4">
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setMobileOpen(true)}
-              aria-label="Open navigation menu"
-              className="lg:hidden p-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-input)] transition-colors"
-            >
-              <Menu size={20} />
-            </button>
+          <header className="glass sticky top-0 z-30 px-3 sm:px-4 h-14 flex items-center justify-between gap-3">
+            {/* Mobile menu button + brand */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <button
+                onClick={() => setMobileOpen(true)}
+                aria-label="Open navigation menu"
+                className="p-2 -ml-1 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-input)] active:scale-95 transition-colors"
+              >
+                <Menu size={22} />
+              </button>
+              <Link to="/" aria-label="BigO home" className="flex items-center">
+                <Logo size={26} withText />
+              </Link>
+            </div>
 
             {/* Spacer on desktop */}
             <div className="hidden lg:block" />
 
             {/* Right controls */}
             <div className="flex items-center gap-2">
-              <ThemeToggle />
               {user && (
                 <Link
                   to={`/u/${user.username}`}
-                  className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold"
+                  className="flex items-center gap-2 p-1 pl-2 sm:px-2 py-1 rounded-xl hover:bg-[var(--bg-input)] transition-colors group"
                   aria-label={`View profile of ${user.username}`}
                 >
-                  {user.username[0].toUpperCase()}
+                  <span className="hidden sm:inline text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
+                    @{user.username}
+                  </span>
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold shadow-xs">
+                    {user.username[0].toUpperCase()}
+                  </div>
                 </Link>
               )}
             </div>
           </header>
 
           {/* Page content */}
-          <main className="flex-1 p-4 md:p-6 pb-24 lg:pb-6 max-w-6xl w-full mx-auto">
+          <main className="flex-1 p-3.5 sm:p-5 md:p-6 pb-24 lg:pb-8 max-w-6xl w-full mx-auto">
             {children}
           </main>
         </div>

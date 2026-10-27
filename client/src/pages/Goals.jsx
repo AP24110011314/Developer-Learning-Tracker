@@ -19,8 +19,8 @@ const emptyForm = {
 };
 
 const STATUS_COLORS = {
-  active:    'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
-  completed: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+  active:    'bg-primary-100 text-primary-700',
+  completed: 'bg-emerald-100 text-emerald-700',
   archived:  'bg-[var(--bg-input)] text-[var(--text-muted)]',
 };
 
@@ -36,12 +36,12 @@ function GoalCard({ g, onEdit, onDelete, index }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06 }}
-      className="card card-hover p-5 space-y-4"
+      className="card card-hover p-4 sm:p-5 space-y-4"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-            isCompleted ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-primary-50 dark:bg-primary-900/20'
+            isCompleted ? 'bg-emerald-100' : 'bg-primary-50'
           }`}>
             {isCompleted
               ? <CheckCircle2 size={20} className="text-emerald-500" />
@@ -200,12 +200,12 @@ export default function Goals() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-[var(--text-primary)]">Goals</h1>
           <p className="text-sm text-[var(--text-muted)] mt-0.5">{active.length} active · {completed.length} completed</p>
         </div>
-        <Button onClick={openAdd} id="add-goal-btn">
+        <Button onClick={openAdd} id="add-goal-btn" className="self-start sm:self-auto">
           <Plus size={16} /> Add Goal
         </Button>
       </div>
@@ -272,7 +272,7 @@ export default function Goals() {
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
           />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Select
               id="goal-metric"
               label="Metric"

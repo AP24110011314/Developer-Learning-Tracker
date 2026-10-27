@@ -20,7 +20,7 @@ function Section({ title, icon: Icon, description, children, index = 0 }) {
       <div className="h-1 bg-gradient-to-r from-primary-500 to-violet-500 rounded-t-2xl" />
       <div className="p-5">
         <div className="flex items-start gap-3 mb-4">
-          <div className="w-9 h-9 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center shrink-0">
             <Icon size={18} className="text-primary-500" />
           </div>
           <div>
@@ -155,7 +155,7 @@ export default function Settings() {
 
       <Section title="Platform sync" icon={Link2} description="Link your competitive programming handles to auto-import solved problems" index={1}>
         <div className="space-y-3 mb-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
               id="settings-leetcode"
               label="LeetCode handle"
@@ -178,10 +178,10 @@ export default function Settings() {
           {['leetcode', 'codeforces'].map((p) => {
             const s = statFor(p);
             return (
-              <div key={p} className="flex items-center justify-between p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-input)]">
+              <div key={p} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-input)]">
                 <div>
                   <div className="text-sm font-semibold text-[var(--text-primary)] capitalize">{p}</div>
-                  <div className="text-xs text-[var(--text-muted)]">
+                  <div className="text-xs text-[var(--text-muted)] mt-0.5">
                     {s
                       ? `${s.totalSolved} solved · rating ${s.rating ?? '—'} · last synced ${s.lastSyncedAt ? new Date(s.lastSyncedAt).toLocaleString() : 'never'}`
                       : 'Never synced'}
@@ -190,6 +190,7 @@ export default function Settings() {
                 <Button
                   size="sm"
                   variant="secondary"
+                  className="self-start sm:self-auto"
                   loading={syncing === p}
                   disabled={syncing !== null}
                   onClick={() => syncNow(p)}

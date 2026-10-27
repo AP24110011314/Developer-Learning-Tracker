@@ -120,7 +120,7 @@ function TableRow({ p, onEdit, onDelete, onStatusChange }) {
       exit={{ opacity: 0 }}
       className="border-t border-[var(--border)] hover:bg-[var(--bg-card-hover)] transition-colors group"
     >
-      <td className="px-4 py-3 text-sm max-w-xs">
+      <td className="px-3 sm:px-4 py-3 text-sm max-w-xs">
         {p.url ? (
           <a
             href={p.url}
@@ -135,14 +135,14 @@ function TableRow({ p, onEdit, onDelete, onStatusChange }) {
           <span className="font-medium text-[var(--text-primary)] truncate">{p.title}</span>
         )}
       </td>
-      <td className="px-4 py-3">
+      <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
         <Badge variant={p.difficulty} dot>{DIFF_LABEL[p.difficulty]}</Badge>
       </td>
-      <td className="px-4 py-3">
+      <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
         <select
           value={p.status}
           onChange={(e) => onStatusChange(p, e.target.value)}
-          className="text-xs font-semibold rounded-full px-2 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-primary-500"
+          className="text-xs font-semibold rounded-full px-2.5 py-1 border-0 cursor-pointer focus:ring-2 focus:ring-primary-500 shadow-2xs"
           style={{
             background: p.status === 'solved' ? 'var(--color-solved-bg)' : p.status === 'revisit' ? 'var(--color-revisit-bg)' : 'var(--color-stuck-bg)',
             color: p.status === 'solved' ? 'var(--color-solved)' : p.status === 'revisit' ? 'var(--color-revisit)' : 'var(--color-stuck)',
@@ -153,7 +153,7 @@ function TableRow({ p, onEdit, onDelete, onStatusChange }) {
           <option value="stuck">Stuck</option>
         </select>
       </td>
-      <td className="px-4 py-3 max-w-[180px]">
+      <td className="px-3 sm:px-4 py-3 max-w-[180px]">
         <div className="flex flex-wrap gap-1">
           {(p.topics || []).slice(0, 3).map((t) => <TopicTag key={t} topic={t} />)}
           {(p.topics || []).length > 3 && (
@@ -161,24 +161,24 @@ function TableRow({ p, onEdit, onDelete, onStatusChange }) {
           )}
         </div>
       </td>
-      <td className="px-4 py-3 text-xs text-[var(--text-muted)]">
+      <td className="px-3 sm:px-4 py-3 text-xs text-[var(--text-muted)] whitespace-nowrap">
         {p.solvedAt ? new Date(p.solvedAt).toLocaleDateString() : '—'}
       </td>
-      <td className="px-4 py-3">
-        <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+      <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
+        <div className="flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onEdit(p)}
             aria-label={`Edit ${p.title}`}
             className="p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)] hover:text-primary-500 transition-colors"
           >
-            <Edit3 size={14} />
+            <Edit3 size={15} />
           </button>
           <button
             onClick={() => onDelete(p)}
             aria-label={`Delete ${p.title}`}
             className="p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)] hover:text-rose-500 transition-colors"
           >
-            <Trash2 size={14} />
+            <Trash2 size={15} />
           </button>
         </div>
       </td>
@@ -197,7 +197,7 @@ export default function Problems() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
-  const [view, setView] = useState('table');
+  const [view, setView] = useState(() => (typeof window !== 'undefined' && window.innerWidth < 640 ? 'card' : 'table'));
   const [searchInput, setSearchInput] = useState('');
   const searchRef = useRef(null);
   const debounceTimer = useRef(null);
@@ -396,15 +396,15 @@ export default function Problems() {
         </div>
 
         {/* Filter chips */}
-        <div className="flex flex-wrap gap-2 items-center pt-1 border-t border-[var(--border)]">
-          <span className="text-xs font-medium text-[var(--text-muted)] mr-1 flex items-center gap-1">
+        <div className="flex items-center gap-1.5 sm:gap-2 pt-1 border-t border-[var(--border)] overflow-x-auto pb-1 sm:pb-0 sm:flex-wrap">
+          <span className="text-xs font-medium text-[var(--text-muted)] mr-1 flex items-center gap-1 shrink-0">
             <Filter size={12} /> Filters:
           </span>
           {['easy', 'medium', 'hard'].map((d) => (
             <button
               key={d}
               onClick={() => applyFilters({ difficulty: filters.difficulty === d ? '' : d })}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
+              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold border transition-all shrink-0 ${
                 filters.difficulty === d
                   ? d === 'easy' ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
                   : d === 'medium' ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
@@ -415,12 +415,12 @@ export default function Problems() {
               {d.charAt(0).toUpperCase() + d.slice(1)}
             </button>
           ))}
-          <div className="w-px h-4 bg-[var(--border)] mx-1" />
+          <div className="w-px h-4 bg-[var(--border)] mx-0.5 shrink-0" />
           {['solved', 'revisit', 'stuck'].map((s) => (
             <button
               key={s}
               onClick={() => applyFilters({ status: filters.status === s ? '' : s })}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
+              className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold border transition-all shrink-0 ${
                 filters.status === s
                   ? s === 'solved' ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
                   : s === 'revisit' ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
@@ -439,9 +439,9 @@ export default function Problems() {
                 setSearchInput('');
                 applyFilters({ difficulty: '', status: '', q: '' });
               }}
-              className="text-xs text-[var(--text-muted)] hover:text-rose-500 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-rose-500/10 transition-colors ml-auto font-medium"
+              className="text-xs text-[var(--text-muted)] hover:text-rose-500 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-rose-500/10 transition-colors ml-auto font-medium shrink-0"
             >
-              <X size={13} /> Reset filters
+              <X size={13} /> Reset
             </button>
           )}
         </div>
@@ -469,16 +469,16 @@ export default function Problems() {
         </motion.div>
       ) : (
         <div className="card overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[var(--bg-input)] text-left">
-                  <th className="px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide">Title</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide">Difficulty</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide">Status</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide">Topics</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide">Date</th>
-                  <th className="px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide sr-only">Actions</th>
+                  <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap">Title</th>
+                  <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap">Difficulty</th>
+                  <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap">Status</th>
+                  <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap">Topics</th>
+                  <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap">Date</th>
+                  <th className="px-3 sm:px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide whitespace-nowrap sr-only">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -521,7 +521,7 @@ export default function Problems() {
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
           />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Select
               id="problem-platform"
               label="Platform"

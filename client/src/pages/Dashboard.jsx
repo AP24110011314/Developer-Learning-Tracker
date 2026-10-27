@@ -137,7 +137,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-500 via-violet-500 to-pink-500 p-6 md:p-8 text-white"
+        className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary-500 via-violet-500 to-pink-500 p-5 sm:p-6 md:p-8 text-white shadow-lg shadow-primary-500/15"
       >
         {/* Decorative background glow */}
         <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/10" />
@@ -145,17 +145,17 @@ export default function Dashboard() {
         <div className="absolute top-8 right-24 w-16 h-16 rounded-full bg-white/10" />
 
         <div className="relative z-10">
-          <p className="text-white/70 text-sm font-medium mb-1">
+          <p className="text-white/70 text-xs sm:text-sm font-medium mb-1">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
             {getGreeting()}, {user?.username}!
           </h1>
-          <p className="mt-2 text-white/80 text-sm md:text-base">{motivation}</p>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <p className="mt-1.5 text-white/80 text-xs sm:text-sm md:text-base">{motivation}</p>
+          <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
             <Link
               to="/problems"
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white font-semibold px-5 py-2.5 rounded-xl text-sm"
+              className="inline-flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 active:scale-95 transition-all text-white font-semibold px-4 sm:px-5 py-2.5 rounded-xl text-sm"
             >
               <Plus size={16} />
               Log a problem
@@ -163,7 +163,7 @@ export default function Dashboard() {
             </Link>
             <Link
               to="/goals"
-              className="inline-flex items-center gap-2 bg-black/20 hover:bg-black/30 transition-colors text-white/90 font-medium px-4 py-2.5 rounded-xl text-sm"
+              className="inline-flex items-center justify-center gap-2 bg-black/20 hover:bg-black/30 active:scale-95 transition-all text-white/90 font-medium px-4 py-2.5 rounded-xl text-sm"
             >
               <Target size={16} />
               View Goals
@@ -176,7 +176,7 @@ export default function Dashboard() {
       {loading ? (
         <SkeletonStatCards count={4} />
       ) : overview ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             index={0}
             label="Total Solved"
@@ -418,15 +418,15 @@ export default function Dashboard() {
             <EmptyState icon="empty" title="No topic data yet" description="Tag your problems with topics to see insights." />
           ) : topicChartType === 'bar' ? (
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={topics.slice(0, 8)} layout="vertical" margin={{ left: 4, right: 8 }}>
+              <BarChart data={topics.slice(0, 8)} layout="vertical" margin={{ left: -10, right: 10, top: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="barGrad" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stopColor="#6366f1" />
                     <stop offset="100%" stopColor="#8b5cf6" />
                   </linearGradient>
                 </defs>
-                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="topic" width={80} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} axisLine={false} tickLine={false} />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="topic" width={72} tick={{ fontSize: 10, fill: 'var(--text-secondary)' }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="count" name="Solved" fill="url(#barGrad)" radius={[0, 6, 6, 0]} />
               </BarChart>
@@ -450,7 +450,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
-        className="card p-5"
+        className="card p-4 sm:p-5"
       >
         <h2 className="font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-500" />
@@ -460,7 +460,7 @@ export default function Dashboard() {
           <EmptyState icon="empty" title="No weekly data yet" description="Solve problems to see your progress over time." />
         ) : (
           <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={weekly} margin={{ left: 0, right: 4, top: 4 }}>
+            <AreaChart data={weekly} margin={{ left: -20, right: 6, top: 4, bottom: 0 }}>
               <defs>
                 <linearGradient id={CHART_GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#6366f1" stopOpacity={0.35} />
@@ -470,12 +470,12 @@ export default function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis
                 dataKey="weekStart"
-                tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
+                tick={{ fontSize: 9, fill: 'var(--text-muted)' }}
                 interval={Math.ceil(weekly.length / 6) - 1}
                 axisLine={false}
                 tickLine={false}
               />
-              <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 9, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"
@@ -497,12 +497,17 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.35 }}
-        className="card p-5"
+        className="card p-4 sm:p-5"
       >
-        <h2 className="font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-          <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-pink-500" />
-          Activity Heatmap {new Date().getFullYear()}
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+          <h2 className="font-bold text-[var(--text-primary)] flex items-center gap-2">
+            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-pink-500" />
+            Activity Heatmap {new Date().getFullYear()}
+          </h2>
+          <span className="sm:hidden text-[11px] text-[var(--text-muted)] italic">
+            Swipe sideways to view year →
+          </span>
+        </div>
         <Heatmap counts={heatmap} />
         <div className="flex items-center gap-1.5 mt-3 text-xs text-[var(--text-muted)]">
           <span>Less</span>

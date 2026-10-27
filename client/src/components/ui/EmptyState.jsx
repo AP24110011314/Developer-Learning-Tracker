@@ -21,7 +21,7 @@ export function EmptyState({ icon = 'empty', title, description, action }) {
       transition={{ duration: 0.4 }}
       className="flex flex-col items-center justify-center py-16 px-4 text-center space-y-4"
     >
-      <div className="w-16 h-16 rounded-2xl bg-primary-50 dark:bg-primary-950/50 flex items-center justify-center">
+      <div className="w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center">
         <Icon size={32} className="text-primary-400" />
       </div>
       <div className="space-y-1">

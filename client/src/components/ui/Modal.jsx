@@ -31,14 +31,14 @@ export function Modal({ open, onClose, title, children, size = 'md' }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -50,7 +50,7 @@ export function Modal({ open, onClose, title, children, size = 'md' }) {
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className={`relative w-full ${widths[size]} card overflow-hidden shadow-modal`}
+            className={`relative w-full ${widths[size]} card overflow-hidden shadow-modal my-auto`}
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 16 }}
@@ -60,8 +60,8 @@ export function Modal({ open, onClose, title, children, size = 'md' }) {
             <div className="h-1 bg-gradient-to-r from-primary-500 to-violet-500" />
 
             {title && (
-              <div className="flex items-center justify-between px-6 pt-5 pb-4">
-                <h2 className="text-lg font-bold text-[var(--text-primary)]">{title}</h2>
+              <div className="flex items-center justify-between px-4 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-[var(--border)]">
+                <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)]">{title}</h2>
                 <button
                   onClick={onClose}
                   aria-label="Close modal"
@@ -72,7 +72,7 @@ export function Modal({ open, onClose, title, children, size = 'md' }) {
               </div>
             )}
 
-            <div className={`px-6 pb-6 max-h-[80vh] overflow-y-auto ${!title ? 'pt-6' : ''}`}>
+            <div className={`px-4 sm:px-6 py-4 sm:py-6 max-h-[82vh] overflow-y-auto ${!title ? 'pt-4 sm:pt-6' : ''}`}>
               {children}
             </div>
           </motion.div>

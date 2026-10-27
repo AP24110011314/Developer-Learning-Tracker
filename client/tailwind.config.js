@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
-  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -40,19 +39,14 @@ export default {
           500: '#06b6d4',
           600: '#0891b2',
         },
-        // Surface tokens for dark mode
+        // Surface tokens
         surface: {
           DEFAULT: '#ffffff',
           secondary: '#f8fafc',
-          dark: '#0f0f1a',
-          'dark-secondary': '#1a1a2e',
-          'dark-card': '#16213e',
-          'dark-border': '#2a2a4a',
         },
       },
       backgroundImage: {
         'hero-gradient': 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)',
-        'hero-gradient-dark': 'linear-gradient(135deg, #4338ca 0%, #6d28d9 50%, #be185d 100%)',
         'card-gradient-violet': 'linear-gradient(135deg, #6366f1, #8b5cf6)',
         'card-gradient-cyan': 'linear-gradient(135deg, #06b6d4, #6366f1)',
         'card-gradient-emerald': 'linear-gradient(135deg, #10b981, #06b6d4)',

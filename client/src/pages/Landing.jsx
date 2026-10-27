@@ -14,7 +14,6 @@ import {
   Award,
   BookOpen,
 } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext.jsx';
 import useDocumentTitle from '../hooks/useDocumentTitle.js';
 import Logo from '../components/Logo.jsx';
 import Button from '../components/ui/Button.jsx';
@@ -22,7 +21,6 @@ import Badge from '../components/ui/Badge.jsx';
 
 export default function Landing() {
   useDocumentTitle('');
-  const { theme, toggleTheme } = useTheme();
 
   const features = [
     {
@@ -72,21 +70,14 @@ export default function Landing() {
             <Logo size={40} withText />
           </Link>
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link to="/login">
               <Button variant="ghost" size="sm">
                 Sign In
               </Button>
             </Link>
             <Link to="/register">
-              <Button variant="primary" size="sm" className="hidden sm:inline-flex">
+              <Button variant="primary" size="sm">
                 Get Started
                 <ArrowRight size={14} />
               </Button>
@@ -96,8 +87,8 @@ export default function Landing() {
       </nav>
 
       {/* ── Hero Section ───────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-16 pb-20 md:pt-24 md:pb-28">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-primary-500/20 to-pink-500/20 rounded-full blur-3xl pointer-events-none -z-10" />
+      <section className="relative overflow-hidden pt-12 pb-16 md:pt-24 md:pb-28">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[600px] h-[340px] sm:h-[600px] bg-gradient-to-tr from-primary-500/20 to-pink-500/20 rounded-full blur-3xl pointer-events-none -z-10" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -105,7 +96,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-500 dark:text-primary-400 text-xs font-semibold mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 text-xs font-semibold mb-6">
               <Sparkles size={14} />
               The All-in-One Developer Growth Platform
             </div>
@@ -151,24 +142,24 @@ export default function Landing() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-14 relative rounded-3xl p-2 sm:p-4 bg-gradient-to-b from-primary-500/20 via-pink-500/10 to-transparent border border-[var(--border)] shadow-2xl backdrop-blur-sm"
           >
-            <div className="rounded-2xl overflow-hidden bg-[var(--bg-card)] border border-[var(--border)] p-6 text-left">
-              <div className="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-6">
+            <div className="rounded-2xl overflow-hidden bg-[var(--bg-card)] border border-[var(--border)] p-3.5 sm:p-6 text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-[var(--border)] pb-4 mb-5">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-rose-500" />
                   <div className="w-3 h-3 rounded-full bg-amber-500" />
                   <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                  <span className="ml-3 text-xs font-semibold text-[var(--text-muted)]">
+                  <span className="ml-2 text-xs font-semibold text-[var(--text-muted)]">
                     Dashboard Preview
                   </span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant="emerald">Live Tracking</Badge>
                   <Badge variant="indigo">28-Day Streak 🔥</Badge>
                 </div>
               </div>
 
               {/* Sample Stat Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-5">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-primary-500/10 to-violet-500/10 border border-primary-500/20">
                   <span className="text-xs text-[var(--text-muted)] font-medium">Total Solved</span>
                   <div className="text-2xl font-extrabold text-[var(--text-primary)] mt-1">342</div>

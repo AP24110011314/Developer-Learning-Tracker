@@ -16,9 +16,9 @@ const emptyForm = {
 };
 
 const STATUS_STYLES = {
-  'planned':     'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300',
-  'in-progress': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
-  'completed':   'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+  'planned':     'bg-sky-100 text-sky-700',
+  'in-progress': 'bg-amber-100 text-amber-700',
+  'completed':   'bg-emerald-100 text-emerald-700',
   'archived':    'bg-[var(--bg-input)] text-[var(--text-muted)]',
 };
 
@@ -42,7 +42,7 @@ function ProjectCard({ p, onEdit, onDelete, index }) {
     >
       {/* Gradient header */}
       <div className={`h-1.5 bg-gradient-to-r ${gradient.replace('/10', '')}`} />
-      <div className="p-5 space-y-3">
+      <div className="p-4 sm:p-5 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ function ProjectCard({ p, onEdit, onDelete, index }) {
         )}
 
         {p.learnings && (
-          <p className="text-xs text-[var(--text-muted)] italic leading-relaxed border-l-2 border-primary-200 dark:border-primary-800 pl-2">
+          <p className="text-xs text-[var(--text-muted)] italic leading-relaxed border-l-2 border-primary-200 pl-2">
             {p.learnings}
           </p>
         )}
@@ -209,12 +209,12 @@ export default function Projects() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-[var(--text-primary)]">Projects</h1>
           <p className="text-sm text-[var(--text-muted)] mt-0.5">{projects.length} projects · {featured.length} featured</p>
         </div>
-        <Button onClick={openAdd} id="add-project-btn">
+        <Button onClick={openAdd} id="add-project-btn" className="self-start sm:self-auto">
           <Plus size={16} /> Add Project
         </Button>
       </div>
@@ -294,7 +294,7 @@ export default function Projects() {
             onChange={(e) => setForm({ ...form, stack: e.target.value })}
             hint="Comma-separated"
           />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
               id="project-repo"
               label="Repo URL"

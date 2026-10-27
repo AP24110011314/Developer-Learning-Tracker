@@ -71,51 +71,6 @@
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark {
-  --bg-page: #0f0f1a;
-  --bg-card: #16213e;
-  --bg-card-hover: #1e2a4a;
-  --bg-input: #1a1a2e;
-  --bg-sidebar: rgba(15, 15, 26, 0.95);
-  --bg-navbar: rgba(15, 15, 26, 0.85);
-
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #0f172a;
-
-  --border: #2a2a4a;
-  --border-strong: #3a3a5a;
-  --border-focus: #818cf8;
-
-  --color-easy: #34d399;
-  --color-easy-bg: rgba(16, 185, 129, 0.15);
-  --color-easy-text: #6ee7b7;
-  --color-medium: #fbbf24;
-  --color-medium-bg: rgba(245, 158, 11, 0.15);
-  --color-medium-text: #fde68a;
-  --color-hard: #f87171;
-  --color-hard-bg: rgba(239, 68, 68, 0.15);
-  --color-hard-text: #fca5a5;
-
-  --color-solved: #4ade80;
-  --color-solved-bg: rgba(34, 197, 94, 0.15);
-  --color-revisit: #fbbf24;
-  --color-revisit-bg: rgba(245, 158, 11, 0.15);
-  --color-stuck: #f87171;
-  --color-stuck-bg: rgba(239, 68, 68, 0.15);
-
-  --heatmap-0: #1a1a2e;
-  --heatmap-1: #2d2b55;
-  --heatmap-2: #4c3d9e;
-  --heatmap-3: #6366f1;
-  --heatmap-4: #818cf8;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 4px 16px 0 rgb(0 0 0 / 0.2);
-  --shadow-md: 0 4px 24px 0 rgb(99 102 241 / 0.2), 0 1px 4px 0 rgb(0 0 0 / 0.3);
-}
-
 /* ─── Base ───────────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -250,13 +205,22 @@ button:hover .logo-hover,
 /* ─── Input ────────────────────────────────────────────────────────────── */
 .input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.625rem 0.875rem;
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-primary);
-  font-size: 0.875rem;
+  /* 16px on mobile prevents iOS Safari from automatically zooming into the field */
+  font-size: 1rem;
+  line-height: 1.5;
   transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+@media (min-width: 640px) {
+  .input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
 }
 
 .input::placeholder {
@@ -312,11 +276,6 @@ button:hover .logo-hover,
 .sidebar-link.active {
   background: rgba(99, 102, 241, 0.12);
   color: #6366f1;
-}
-
-.dark .sidebar-link.active {
-  background: rgba(99, 102, 241, 0.2);
-  color: #818cf8;
 }
 
 /* ─── Progress bar ──────────────────────────────────────────────────────── */

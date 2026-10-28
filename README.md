@@ -8,13 +8,14 @@ solves, and share a public profile.
 
 ## 📸 Screenshots
 
-### 🖥️ Dashboard
+### 🖥️ Login Page
 
-![Dashboard](Screenshots/dashboard.png)
+![BigO-Login Page](Screenshots/p1.png)
 
-### 📝 Problems
+### 📝 Dashboard
 
-![Problems](Screenshots/problem.png)
+![BigO-Dashboard](Screenshots/p2.png)
+
 ## Features
 
 - **Auth** — register/login with short-lived JWT access tokens (15 min) +

@@ -8,13 +8,17 @@ solves, and share a public profile.
 
 ## 📸 Screenshots
 
-### 🖥️ Login Page
+🖥️ Login Page
 
-![BigO-Login Page](Screenshots/p1.png)
+<div align="center">
+  <img src="Screenshots/p1.png" alt="BigO Login Page" width="85%" />
+</div>
 
-### 📝 Dashboard
+📝 Dashboard
 
-![BigO-Dashboard](Screenshots/p2.png)
+<div align="center">
+  <img src="Screenshots/p2.png" alt="BigO Dashboard" width="85%" />
+</div>
 
 ## Features
 
